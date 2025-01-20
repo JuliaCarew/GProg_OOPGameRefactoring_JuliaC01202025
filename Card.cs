@@ -8,5 +8,6 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
 {
     internal class Card
     {
+
     }
 }
