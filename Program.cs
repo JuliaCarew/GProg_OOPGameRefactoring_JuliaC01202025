@@ -155,7 +155,7 @@ class Program
             Console.WriteLine(choice.ToString());
             if (choice == 0) return;
 
-            PlayCard(hand[choice - 1], isPlayer);
+            //PlayCard(hand[choice - 1], isPlayer); //reference Card.cs
             hand.RemoveAt(choice - 1);
         }
         else
@@ -171,7 +171,7 @@ class Program
                 (cardToPlay == "SlashCard" && enemyMana >= 20) ||
                 (cardToPlay == "PowerUpCard" && enemyMana >= 30))
             {
-                PlayCard(cardToPlay, isPlayer);
+                //PlayCard(cardToPlay, isPlayer); // //reference Card.cs
                 hand.RemoveAt(cardIndex);
             }
         }

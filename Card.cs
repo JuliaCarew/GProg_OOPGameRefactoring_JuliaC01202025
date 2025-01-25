@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,19 +36,34 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
         public int Damage { get; protected set; } // protected makes it so the children classses can change it
 
         //general methods
-        public void TakeDamage(int cardDamage) // use damage property
+        public void TakeDamage(int cardDamage, bool hasFireBuff, bool hasIceShield) // use damage property
         {
+            // if this works no need to have individual checks for each in all cards
             PlayerHealth -= cardDamage;
             // needs to take into account fire buff and ice shield
             // firebuff means damage *= 2
+            if (hasFireBuff) {
+                Damage *= 2; // damage from the player or the enemy?
+                Console.WriteLine("player has fire buff");
+            }
             // iceshield means damage /= 2
+            if (hasIceShield)
+            {
+                Damage /= 2;
+                Console.WriteLine("player has ice shield");
+            }
         }
 
         static int playerMana = 100;
         public static int PlayerMana { get => playerMana; }
-        public void CheckMana(int manaNeeded) // to replace the checks for each cards mana cost in the classes
+        // needs to check if players current mana is enough to cast, return if not
+        public void CheckMana(int manaNeeded) //, out bool isManaSufficient) // to replace the checks for each cards mana cost in the classes
+            // also include bool to pass true/fanse if mana needed is right or not
         {
-            if (manaNeeded > PlayerMana) return;
+            //isManaSufficient = PlayerMana >= manaNeeded;
+            //return isManaSufficient;
+            if (manaNeeded < PlayerMana) return;
+            Console.WriteLine("Not enough mana");
         }
 
         static void PlayCard(string cardName, bool isPlayer)
@@ -58,7 +74,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
 
     class Fireball : Cards
     {
-        Damage = 40;
+        // Damage = 40; // child set value of damage
         // something like Damage = (whatever the damage of this card is)
         void FireballCard(string cardName, bool isPlayer)
         {
