@@ -11,7 +11,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
     {
         // put list of cards in deck script , but its already in the gamemanager Program.cs
 
-        //generate properties of all card variables? 
+        //generate properties of all card variables 
         public static int PlayerHealth { get; set; } = 100;
         public static int PlayerMana { get; set; } = 100;
         public static int PlayerShield { get; set; } = 0;
