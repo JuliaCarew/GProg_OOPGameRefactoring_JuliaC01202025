@@ -37,7 +37,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
 
         //general methods
         // needs to properly give damage using card dmg as base, check in runtime if buffed/shielded
-        public static void TakeDamage(ref int targetHealth, ref int targetShield, int damage, bool hasFireBuff, bool hasIceShield)
+        public static void TakeDamage(int targetHealth, int targetShield, int damage, bool hasFireBuff, bool hasIceShield)
         {
             // Apply buffs or shields to the damage
             if (hasFireBuff) damage *= 2;
@@ -92,7 +92,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
                 if (!CheckMana(PlayerMana, manaCost)) return;
 
                 PlayerMana -= manaCost;
-                TakeDamage(ref EnemyHealth, ref EnemyShield, baseDamage, PlayerHasFireBuff, EnemyHasIceShield);
+                TakeDamage(EnemyHealth, EnemyShield, baseDamage, PlayerHasFireBuff, EnemyHasIceShield);
                 Console.WriteLine($"Player casts Fireball for {baseDamage} damage!");
             }
             else
@@ -100,7 +100,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
                 if (!CheckMana(EnemyMana, manaCost)) return;
 
                 EnemyMana -= manaCost;
-                TakeDamage(ref PlayerHealth, ref PlayerShield, baseDamage, EnemyHasFireBuff, PlayerHasIceShield);
+                TakeDamage(PlayerHealth, PlayerShield, baseDamage, EnemyHasFireBuff, PlayerHasIceShield);
                 Console.WriteLine($"Enemy casts Fireball for {baseDamage} damage!");
             }
         }
@@ -172,7 +172,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
                 if (!CheckMana(PlayerMana, manaCost)) return;
 
                 PlayerMana -= manaCost;
-                TakeDamage(ref EnemyHealth, ref EnemyShield, baseDamage, PlayerHasFireBuff, false);
+                TakeDamage(EnemyHealth, EnemyShield, baseDamage, PlayerHasFireBuff, false);
                 Console.WriteLine($"Player slashes for {baseDamage} damage!");
             }
             else
@@ -180,7 +180,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
                 if (!CheckMana(EnemyMana, manaCost)) return;
 
                 EnemyMana -= manaCost;
-                TakeDamage(ref PlayerHealth, ref PlayerShield, baseDamage, EnemyHasFireBuff, false);
+                TakeDamage(PlayerHealth, PlayerShield, baseDamage, EnemyHasFireBuff, false);
                 Console.WriteLine($"Enemy slashes for {baseDamage} damage!");
             }
         }
