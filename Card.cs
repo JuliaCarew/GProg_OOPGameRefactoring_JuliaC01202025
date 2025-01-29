@@ -37,6 +37,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
 
         //general methods
         // needs to properly give damage using card dmg as base, check in runtime if buffed/shielded
+        // !!! should move this to entity script
         public static void TakeDamage(int targetHealth, int targetShield, int damage, bool hasFireBuff, bool hasIceShield)
         {
             // Apply buffs or shields to the damage
@@ -71,7 +72,7 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
             Console.WriteLine("Not enough mana!");
             return false;
         }
-
+        // have CheckFireBuff & CheckIceShield?
         static void PlayCard(string cardName, bool isPlayer)
         {
             // call whatever card chosen by player or enemy (output of another method?)
@@ -84,8 +85,8 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
         // something like Damage = (whatever the damage of this card is)
         public static void UseCard(bool isPlayer)
         {
-            const int manaCost = 30;
-            const int baseDamage = 40;
+            int manaCost = 30;
+            int baseDamage = 40;
 
             if (isPlayer)
             {
@@ -110,8 +111,8 @@ namespace GProg_OOPGameRefactoring_JuliaC01202025
     {
         public static void UseCard(bool isPlayer)
         {
-            const int manaCost = 20;
-            const int shieldAmount = 30;
+            int manaCost = 20;
+            int shieldAmount = 30;
 
             if (isPlayer)
             {

@@ -193,3 +193,5 @@ class Program
         }
     }
 }
+// use an interface to set up card needed variables and methods?
+// look at source for ref
