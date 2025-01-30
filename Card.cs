@@ -7,209 +7,103 @@ using System.Threading.Tasks;
 
 namespace GProg_OOPGameRefactoring_JuliaC01202025
 {
-    class Cards // call variables when card instantiated
+    public abstract class Cards
     {
-        // put list of cards in deck script , but its already in the gamemanager Program.cs
+        public string Name { get; protected set; }
+        public int ManaCost { get; protected set; }
+        public int Damage { get; protected set; }
 
-        //generate properties of all card variables 
-        public static int PlayerHealth { get; set; } = 100;
-        public static int PlayerMana { get; set; } = 100;
-        public static int PlayerShield { get; set; } = 0;
-        public static bool PlayerHasFireBuff { get; set; } = false;
-        public static bool PlayerHasIceShield { get; set; } = false;
+        public abstract void UseCard(GameEntity user, GameEntity target);
+    }
 
-        public static int EnemyHealth { get; set; } = 100;
-        public static int EnemyMana { get; set; } = 100;
-        public static int EnemyShield { get; set; } = 0;
-        public static bool EnemyHasFireBuff { get; set; } = false;
-        public static bool EnemyHasIceShield { get; set; } = false;
-
-        //health
-        //protected static int playerHealth = 100, playerMaxHealth = 100;
-       // public static int PlayerHealth { get => playerHealth; // in individual cards. set values like these at the start, then call general methods
-        //    set {
-        //        playerHealth = Math.Max(0, Math.Min(playerMaxHealth, value));
-        //    }
-       // }
-
-        int damage;
-        public int Damage { get; protected set; } // protected makes it so the children classses can change it
-
-        //general methods
-        // needs to properly give damage using card dmg as base, check in runtime if buffed/shielded
-        // !!! should move this to entity script
-        public static void TakeDamage(int targetHealth, int targetShield, int damage, bool hasFireBuff, bool hasIceShield)
+    public class Fireball : Cards
+    {
+        public Fireball()
         {
-            // Apply buffs or shields to the damage
-            if (hasFireBuff) damage *= 2;
-            if (hasIceShield) damage /= 2;
-
-            // Shield absorbs damage first
-            if (targetShield > 0)
-            {
-                if (targetShield >= damage)
-                {
-                    targetShield -= damage;
-                    damage = 0;
-                }
-                else
-                {
-                    damage -= targetShield;
-                    targetShield = 0;
-                }
-            }
-
-            // Apply remaining damage to health
-            targetHealth = Math.Max(0, targetHealth - damage);
+            ManaCost = 30;
         }
 
-        //static int playerMana = 100;
-        //public static int PlayerMana { get => playerMana; }
-        // needs to check if players current mana is enough to cast, return if not
-        public static bool CheckMana(int currentMana, int manaNeeded)
+        public override void UseCard(GameEntity user, GameEntity target)
         {
-            if (currentMana >= manaNeeded) return true;
-            Console.WriteLine("Not enough mana!");
-            return false;
-        }
-        // have CheckFireBuff & CheckIceShield?
-        static void PlayCard(string cardName, bool isPlayer)
-        {
-            // call whatever card chosen by player or enemy (output of another method?)
+            if (!user.SpendMana(ManaCost)) return;
+            target.TakeDamage(40);
+            Console.WriteLine($"{user.Name} casts Fireball for {Damage} damage!");
         }
     }
 
-    class Fireball : Cards
+    public class IceShield : Cards
     {
-        // Damage = 40; // child set value of damage
-        // something like Damage = (whatever the damage of this card is)
-        public static void UseCard(bool isPlayer)
+        public IceShield()
         {
-            int manaCost = 30;
-            int baseDamage = 40;
+            ManaCost = 20;
+        }
 
-            if (isPlayer)
-            {
-                if (!CheckMana(PlayerMana, manaCost)) return;
-
-                PlayerMana -= manaCost;
-                TakeDamage(EnemyHealth, EnemyShield, baseDamage, PlayerHasFireBuff, EnemyHasIceShield);
-                Console.WriteLine($"Player casts Fireball for {baseDamage} damage!");
-            }
-            else
-            {
-                if (!CheckMana(EnemyMana, manaCost)) return;
-
-                EnemyMana -= manaCost;
-                TakeDamage(PlayerHealth, PlayerShield, baseDamage, EnemyHasFireBuff, PlayerHasIceShield);
-                Console.WriteLine($"Enemy casts Fireball for {baseDamage} damage!");
-            }
+        public override void UseCard(GameEntity user, GameEntity target)
+        {
+            if (!user.SpendMana(ManaCost)) return;
+            user.GainShield(30);
+            user.ApplyIceShield();
+            Console.WriteLine($"{user.Name} gains an Ice Shield!");
         }
     }
 
-    class IceShield : Cards
+    public class Heal : Cards
     {
-        public static void UseCard(bool isPlayer)
+        public Heal()
         {
-            int manaCost = 20;
-            int shieldAmount = 30;
+            ManaCost = 40;
+        }
 
-            if (isPlayer)
-            {
-                if (!CheckMana(PlayerMana, manaCost)) return;
-
-                PlayerMana -= manaCost;
-                PlayerShield += shieldAmount;
-                PlayerHasIceShield = true;
-                Console.WriteLine("Player gains Ice Shield!");
-            }
-            else
-            {
-                if (!CheckMana(EnemyMana, manaCost)) return;
-
-                EnemyMana -= manaCost;
-                EnemyShield += shieldAmount;
-                EnemyHasIceShield = true;
-                Console.WriteLine("Enemy gains Ice Shield!");
-            }
+        public override void UseCard(GameEntity user, GameEntity target)
+        {
+            if (!user.SpendMana(ManaCost)) return;
+            //user.Health = Math.Min(100, user.Health + 40);
+            Console.WriteLine($"{user.Name} heals 40 health!");
         }
     }
 
-    class Heal : Cards
+    public class Slash : Cards
     {
-        public static void UseCard(bool isPlayer)
+        public Slash()
         {
-            const int manaCost = 40;
-            const int healAmount = 40;
+            ManaCost = 20;
+        }
 
-            if (isPlayer)
-            {
-                if (!CheckMana(PlayerMana, manaCost)) return;
-
-                PlayerMana -= manaCost;
-                PlayerHealth = Math.Min(100, PlayerHealth + healAmount);
-                Console.WriteLine("Player heals 40 health!");
-            }
-            else
-            {
-                if (!CheckMana(EnemyMana, manaCost)) return;
-
-                EnemyMana -= manaCost;
-                EnemyHealth = Math.Min(100, EnemyHealth + healAmount);
-                Console.WriteLine("Enemy heals 40 health!");
-            }
+        public override void UseCard(GameEntity user, GameEntity target)
+        {
+            if (!user.SpendMana(ManaCost)) return;
+            target.TakeDamage(20);
+            Console.WriteLine($"{user.Name} slashes for {Damage} damage!");
         }
     }
 
-    class Slash : Cards
+    public class PowerUp : Cards
     {
-        public static void UseCard(bool isPlayer)
+        public PowerUp()
         {
-            const int manaCost = 20;
-            const int baseDamage = 20;
+            ManaCost = 30;
+        }
 
-            if (isPlayer)
-            {
-                if (!CheckMana(PlayerMana, manaCost)) return;
-
-                PlayerMana -= manaCost;
-                TakeDamage(EnemyHealth, EnemyShield, baseDamage, PlayerHasFireBuff, false);
-                Console.WriteLine($"Player slashes for {baseDamage} damage!");
-            }
-            else
-            {
-                if (!CheckMana(EnemyMana, manaCost)) return;
-
-                EnemyMana -= manaCost;
-                TakeDamage(PlayerHealth, PlayerShield, baseDamage, EnemyHasFireBuff, false);
-                Console.WriteLine($"Enemy slashes for {baseDamage} damage!");
-            }
+        public override void UseCard(GameEntity user, GameEntity target)
+        {
+            if (!user.SpendMana(ManaCost)) return;
+            user.ApplyFireBuff();
+            Console.WriteLine($"{user.Name} gains a Fire Buff!");
         }
     }
 
-    class PowerUp : Cards
+    public class Meditate : Cards
     {
-        public static void UseCard(bool isPlayer)
+        public Meditate()
         {
-            const int manaCost = 30;
+            ManaCost = 10;
+        }
 
-            if (isPlayer)
-            {
-                if (!CheckMana(PlayerMana, manaCost)) return;
-
-                PlayerMana -= manaCost;
-                PlayerHasFireBuff = true;
-                Console.WriteLine("Player gains Fire Buff!");
-            }
-            else
-            {
-                if (!CheckMana(EnemyMana, manaCost)) return;
-
-                EnemyMana -= manaCost;
-                EnemyHasFireBuff = true;
-                Console.WriteLine("Enemy gains Fire Buff!");
-            }
-        
+        public override void UseCard(GameEntity user, GameEntity target)
+        {
+            if (!user.SpendMana(ManaCost)) return;
+            user.RegenerateMana();
+            Console.WriteLine($"{user.Name} meditates to regenerate 50 mana!");
         }
     }
 }
