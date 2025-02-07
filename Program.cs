@@ -95,11 +95,11 @@ class Program
     }
 
     // Handles a turn for either the player or enemy
-    static void PlayTurn(bool isPlayer)
+    static void PlayTurn(bool isPlayer) // !!! COULD pass turn owner / entity inst of bool isPlayer
     {
-        var entity = isPlayer ? player : enemy;
-        var opponent = isPlayer ? enemy : player;
-        var hand = isPlayer ? player.Hand : enemy.Hand;
+        var entity = isPlayer ? player : enemy; // !
+        var opponent = isPlayer ? enemy : player; // !
+        var hand = isPlayer ? player.Hand : enemy.Hand; // !
 
         if (isPlayer)
         {
